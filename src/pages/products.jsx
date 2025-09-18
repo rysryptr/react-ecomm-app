@@ -2,12 +2,12 @@ import { useEffect, useRef, useState } from "react";
 import CardProducts from "../components/Fragments/CardProducts";
 import { getProduct } from "../services/products.service";
 import { getUsername } from "../services/login.service";
+import { useLogin } from "../hooks/useLogin";
 
 const ProductsPage = () => {
   const [cart, setCart] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const [products, setProducts] = useState([]);
-  const [username, setUsername] = useState("");
 
   const handleLogout = () => {
     window.location.href = "/login";
@@ -18,15 +18,7 @@ const ProductsPage = () => {
     setCart(JSON.parse(localStorage.getItem("cart")) || []);
   }, []);
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-
-    if (token) {
-      setUsername(getUsername(token));
-    } else {
-      window.location.href = "/login";
-    }
-  }, []);
+  const username = useLogin();
 
   useEffect(() => {
     getProduct((data) => {
@@ -104,15 +96,15 @@ const ProductsPage = () => {
         </div>
         <div className="w-2/8">
           <h1 className="text-xl font-semibold mb-4">Cart</h1>
-          <table className="text-left border-separate table-auto border-spacing-x-5">
-            <thead>
+          <table className="w-full text-left text-sm border-separate border-spacing-2 table-auto border-spacing-x-5">
+            {/* <thead>
               <tr>
                 <th>Name</th>
                 <th>Price</th>
                 <th>Quantity</th>
                 <th>Total</th>
               </tr>
-            </thead>
+            </thead> */}
             <tbody>
               {products.length > 0 &&
                 cart.map((item) => {
@@ -120,24 +112,47 @@ const ProductsPage = () => {
                     (product) => product.id === item.id
                   );
                   return (
-                    <tr key={item.id}>
-                      <td>{product.title.substring(0, 30)}</td>
-                      <td>
-                        ${" "}
-                        {product.price.toLocaleString("id-ID", {
-                          styles: "currency",
-                          currency: "IDR",
-                        })}
-                      </td>
-                      <td>{item.qty}</td>
-                      <td>
-                        ${" "}
-                        {(item.qty * product.price).toLocaleString("id-ID", {
-                          styles: "currency",
-                          currency: "IDR",
-                        })}
-                      </td>
-                    </tr>
+                    <>
+                      <tr key={item.id}>
+                        <td rowSpan={2}>
+                          <img
+                            src={product.image}
+                            alt="product"
+                            className="w-10"
+                          />
+                        </td>
+                        <td colSpan={3}>
+                          <p>{product.title.substring(0, 40)}</p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          Price:{" "}
+                          <b>
+                            ${" "}
+                            {product.price.toLocaleString("id-ID", {
+                              styles: "currency",
+                              currency: "IDR",
+                            })}
+                          </b>
+                        </td>
+                        <td>
+                          Qty: <b>{item.qty}</b>
+                        </td>
+                        <td>
+                          <b>
+                            ${" "}
+                            {(item.qty * product.price).toLocaleString(
+                              "id-ID",
+                              {
+                                styles: "currency",
+                                currency: "IDR",
+                              }
+                            )}
+                          </b>
+                        </td>
+                      </tr>
+                    </>
                   );
                 })}
               <tr ref={totalPriceRef}>
