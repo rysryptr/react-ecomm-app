@@ -68,7 +68,7 @@ const ProductsPage = () => {
 
   return (
     <>
-      <div className="bg-sky-600 flex justify-end items-center py-4 px-8 gap-4">
+      <div className="bg-black flex justify-end items-center py-4 px-8 gap-4">
         <p className="text-white font-light">{username}</p>
         <button
           className="bg-slate-800 rounded-md py-2 px-4 text-white hover:cursor-pointer font-medium"
@@ -82,7 +82,7 @@ const ProductsPage = () => {
           {products.length > 0 &&
             products.map((product) => (
               <CardProducts key={product.id}>
-                <CardProducts.Header image={product.image} />
+                <CardProducts.Header id={product.id} image={product.image} />
                 <CardProducts.Body title={product.title}>
                   {product.description}
                 </CardProducts.Body>
