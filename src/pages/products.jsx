@@ -1,14 +1,16 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import CardProducts from "../components/Fragments/CardProducts";
 import { getProduct } from "../services/products.service";
 import { useLogin } from "../hooks/useLogin";
 import TableCart from "../components/Fragments/TableCart";
 import Navbar from "../components/Layouts/Navbar";
+import { DarkMode } from "../contexts/DarkMode";
 
 const ProductsPage = () => {
   const [cart, setCart] = useState([]);
 
   const [products, setProducts] = useState([]);
+  const { isDarkMode } = useContext(DarkMode);
 
   useEffect(() => {
     setCart(JSON.parse(localStorage.getItem("cart")) || []);
@@ -43,7 +45,11 @@ const ProductsPage = () => {
   return (
     <>
       <Navbar />
-      <div className="flex justify-center gap-4 mt-4 px-4">
+      <div
+        className={`flex justify-center gap-4 p-4 ${
+          isDarkMode && "bg-slate-600"
+        }`}
+      >
         <div className="flex flex-wrap w-6/8 gap-4">
           {products.length > 0 &&
             products.map((product) => (
@@ -61,7 +67,13 @@ const ProductsPage = () => {
             ))}
         </div>
         <div className="w-2/8">
-          <h1 className="text-xl font-semibold mb-4">Cart</h1>
+          <h1
+            className={`text-xl font-semibold mb-4 ${
+              isDarkMode && "text-white"
+            }`}
+          >
+            Cart
+          </h1>
           <TableCart products={products} />
         </div>
       </div>
